@@ -2,10 +2,12 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
 
 GREEN_LED=18
 GPIO.setup(GREEN_LED,GPIO.OUT)
-LED_DELAY=0.1
+LED_DELAY=2
 
 
 State=0
@@ -20,3 +22,4 @@ while True:
 		State=0
 
 	sleep(LED_DELAY)
+GPIO.cleanup()
