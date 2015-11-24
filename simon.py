@@ -40,13 +40,24 @@ def setSequence():
         return sequence
 
 def playSequence(sequence,difficulty):
+	pause=1-(0.1*difficulty)
+	if (difficulty>8):
+		pause=0.2
 	for x in range(0,len(sequence)):
-		time.sleep(difficulty)
+		time.sleep(pause)
 		GPIO.output(sequence[x],1)
-		time.sleep(difficulty)
+		time.sleep(pause)
 		GPIO.output(sequence[x],0)
 	return 0
 
+def blink(LED,times,pause):
+        i=0
+        while(i<(times+1)):
+                GPIO.output(LED,1)
+                time.sleep(pause)
+                GPIO.output(LED,0)
+                time.sleep(pause)
+                i=i+1
 
 sequenceToken=1
 level=1
@@ -57,7 +68,6 @@ try:
 			setSequence() #append to the sequence
 			playSequence(sequence,level) #turn on the corresponding lights on with corresponding difficulty
 			sequenceToken=0 #flags readiness to take user input
-			elseCount=0 #records number of times else loop ran
 		else: #runs while waiting for user input
 			answerToken=1 #when loop starts, ensure that answerSequence can be appended
 			while((GPIO.input(PB1))and(GPIO.input(PB2))and(GPIO.input(PB3))): #ensures we stay in the loop before button press
@@ -67,27 +77,34 @@ try:
 					answerSequence.append(LED1)
 					answerToken=0
 				GPIO.output(LED1,1)
+				time.sleep(0.2)
 			GPIO.output(LED1,0)
 			while(GPIO.input(PB2)==0): #same as above
 				if(answerToken==1):
 					answerSequence.append(LED2)
 					answerToken=0
 				GPIO.output(LED2,1)
+				time.sleep(0.2)
 			GPIO.output(LED2,0)
 			while(GPIO.input(PB3)==0): #same as above
 				if(answerToken==1):
 					answerSequence.append(LED3)
 					answerToken=0
 				GPIO.output(LED3,1)
+				time.sleep(0.2)
 			GPIO.output(LED3,0)	
 			if(answerSequence==sequence[0:len(answerSequence)]):
 				sequenceToken=0 #as long as they're right so far, continue polling
 				if(len(answerSequence)==len(sequence)): #if they've gotten the whole sequence right, stop polling, set up new sequence
 					sequenceToken=1
+					level=level+1 #means they got it right, increment difficulty
 			else: #if they're wrong, go back to beginning, set a whole new sequence
 				sequenceToken=1 #closes loop if they're right or finished
-				sequence=[]
-
+				sequence=[]#resets the sequence
+				level=1 #resets difficulty level
+				blink(wrongLED,3,0.05)
+	
+			time.sleep(0.1)#ensures debouncing takes place
 except KeyboardInterrupt:
 	GPIO.cleanup()
 GPIO.cleanup()
