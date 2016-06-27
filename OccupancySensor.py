@@ -125,15 +125,15 @@ sunsetHour=convertMilitary(sunsetInt[2],sunsetInt)
 dateCompare=[0,0] #set up array for compare loop
 
 #need while loop to start here
-currentDate= str(datetime.datetime.now())
-print 'currenDate: '+currentDate
-currentHour=int(currentDate.split(' ')[1].split(':')[0])
-currentMinute=int(currentDate.split(' ')[1].split(':')[1])
-rawDate=int(currentDate.split('-')[2].split(' ')[0])
-#Make date compare array
-print rawDate
-dateCompare[1]=rawDate
-if not dateCompare[0]==dateCompare[1]: #if there is a date change, get new sunset/sunrise data
-
+while(1):
+	currentDate= str(datetime.datetime.now())
+	print 'currentDate: '+currentDate
+	currentHour=int(currentDate.split(' ')[1].split(':')[0])
+	currentMinute=int(currentDate.split(' ')[1].split(':')[1])
+	rawDate=int(currentDate.split('-')[2].split(' ')[0])
+	#Make date compare array
+	dateCompare[1]=rawDate
+	if not dateCompare[0]==dateCompare[1]: #if there is a date change, get new sunset/sunrise data
+	
 
 GPIO.cleanup()
